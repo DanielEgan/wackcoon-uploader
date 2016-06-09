@@ -12,6 +12,7 @@
   "dependencies": {
     "body-parser": "^1.15.1",
     "express": "^4.13.4",
-    "needle": "^1.0.0"
+    "needle": "^1.0.0",
+    "request": "^2.72.0"
   }
 }

@@ -1,39 +1,29 @@
-https=require ('https');
-fs=require("fs");
+var express = require('express');
+var request = require('request');
+var querystring = require('querystring');
+var http = require('http');
+var needle = require('needle');
 
-fs.readFile("LocalFile.jpg", function(err, data) {
-    if (err)
-        console.log("read jpg fail " + err);
-    else {
-        var post_options = {
-            host: 'api.projectoxford.ai',
-            method: 'POST',
-            data: data,
-            path: '/face/v0/detections?subscription-key=***',
-            headers: {
-                'Content-Type': 'application/octet-stream',
-                'Content-Length': data.length
-            }
+
+
+var data = {
+ url:"http://1.bp.blogspot.com/-YZ-8H9fT53E/T2reVAKkSGI/AAAAAAAABd8/XjX2Eu5KaYI/s1600/Raccoon-4.jpg"
+};
+
+var params = {
+            "visualFeatures": "Tags"
         };
 
-        var post_req = https.request(post_options, function (response) {
+  var options = {
+  headers: {'Ocp-Apim-Subscription-Key': '48cdc4d0cd6d4bed9f1cb05dcfef72ec', 'Content-Type':'application/json' }
+}
 
-            var responseText;
-
-            response.on('data', function (rdata) {
-
-                responseText+=rdata;
-            });
-
-            response.on('end', function () {
-
-                console.log(responseText)
-            });
-
-        });
-
-        post_req.write(data);
-
-        post_req.end();
-    }
+needle.post('https://api.projectoxford.ai/vision/v1.0/analyze?' + querystring.stringify(params), {"url":"https://upload.wikimedia.org/wikipedia/commons/4/41/Raccoon_-_Jonathan_Dickinson_State_Park.jpg"}, options, function(err, resp) {
+  // you can pass params as a string or as an object.
+  console.log(err);
+  console.log('https://api.projectoxford.ai/vision/v1.0/analyze?' + querystring.stringify(params));
+  console.log(resp.body);
 });
+
+
+
