@@ -1,0 +1,17 @@
+{
+  "name": "wackcoon-uploader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Daniel Egan <daniel.egan@live.com> (http://TheSociableGeek.com)",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.15.1",
+    "express": "^4.13.4",
+    "needle": "^1.0.0"
+  }
+}

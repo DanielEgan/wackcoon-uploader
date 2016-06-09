@@ -1,0 +1,433 @@
+ 
+
+
+     
+ 
+Microsoft
+ 
+Cognitive Services
+    
+
+
+
+
+
+
+ 
+
+
+
+
+
+APIs Documentation > API Reference
+
+POST Analyze Image 
+
+
+POST Describe Image 
+
+
+POST Get Thumbnail 
+
+
+GET List Domain Specific Models 
+
+
+POST OCR 
+
+
+POST Recognize Domain Specific Content 
+
+
+POST Tag Image 
+
+
+
+
+Computer Vision API - v1.0
+
+The Computer Vision API provides state-of-the-art algorithms to process images and return information. For example, it can be used to determine if an image contains mature content, or it can be used to find all the faces in an image. It also has other features like estimating dominant and accent colors, categorizing the content of images, and describing an image with complete English sentences. Additionally, it can also intelligently generate images thumbnails for displaying large images effectively.
+
+
+Analyze Image
+
+This operation extracts a rich set of visual features based on the image content. 
+
+ Two input methods are supported -- (1) Uploading an image or (2) specifying an image URL. Within your request, there is an optional parameter to allow you to choose which features to return. By default, image categories are returned in the response. 
+
+ A successful response will be returned in JSON. If the request failed, the response will contain an error code and a message to help understand what went wrong. 
+
+Http Method
+POST
+Open API Testing Console 
+Request URL
+
+
+https://api.projectoxford.ai/vision/v1.0/analyze[?visualFeatures][&details] 
+
+Request parameters
+
+
+
+visualFeatures (optional) 
+
+string 
+
+A string indicating what visual feature types to return. Multiple values should be comma-separated. 
+Valid visual feature types include: 
+•Categories - categorizes image content according to a taxonomy defined in documentation. 
+•Tags - tags the image with a detailed list of words related to the image content. 
+•Description - describes the image content with a complete English sentence. 
+•Faces - detects if faces are present. If present, generate coordinates, gender and age.
+•ImageType - detects if image is clipart or a line drawing.
+• Color - determines the accent color, dominant color, and whether an image is black&white.
+•Adult - detects if the image is pornographic in nature (depicts nudity or a sex act). Sexually suggestive content is also detected.
+
+
+details (optional) 
+
+string 
+
+A string indicating which domain-specific details to return. Multiple values should be comma-separated. 
+Valid visual feature types include: 
+•Celebrities - identifies celebrities if detected in the image.
+
+Request headers
+
+
+
+Content-Type (optional) 
+
+string 
+
+Media type of the body sent to the API. 
+
+
+Ocp-Apim-Subscription-Key 
+
+string 
+
+Subscription key which provides access to this API. Found in your subscriptions. 
+
+Request body
+
+
+Input passed within the POST body. Supported input methods: raw image binary or image URL. 
+
+Input requirements: 
+•Supported image formats: JPEG, PNG, GIF, BMP. 
+•Image file size must be less than 4MB.
+•Image dimensions must be at least 50 x 50.
+
+
+
+application/json 
+
+
+application/octet-stream 
+
+
+multipart/form-data 
+
+
+
+
+
+
+{"url":"http://example.com/images/test.jpg"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+Response 200
+
+
+The response include the extracted features in JSON format. 
+
+Here is the definitions for enumeration types 
+ClipartType 
+•Non-clipart = 0, 
+• ambiguous = 1,
+• normal-clipart = 2,
+• good-clipart = 3.
+
+LineDrawingType •Non-LineDrawing = 0,
+•LineDrawing = 1.
+
+
+
+application/json 
+
+
+
+
+
+
+{
+  "categories": [
+    {
+      "name": "abstract_",
+      "score": 0.00390625
+    },
+    {
+      "name": "people_",
+      "score": 0.83984375,
+      "detail": {
+        "celebrities": [
+          {
+            "name": "Satya Nadella",
+            "faceRectangle": {
+              "left": 597,
+              "top": 162,
+              "width": 248,
+              "height": 248
+            },
+            "confidence": 0.999028444
+          }
+        ]
+      }
+    }
+  ],
+  "adult": {
+    "isAdultContent": false,
+    "isRacyContent": false,
+    "adultScore": 0.0934349000453949,
+    "racyScore": 0.068613491952419281
+  },
+  "tags": [
+    {
+      "name": "person",
+      "confidence": 0.98979085683822632
+    },
+    {
+      "name": "man",
+      "confidence": 0.94493889808654785
+    },
+    {
+      "name": "outdoor",
+      "confidence": 0.938492476940155
+    },
+    {
+      "name": "window",
+      "confidence": 0.89513939619064331
+    }
+  ],
+  "description": {
+    "tags": [
+      "person",
+      "man",
+      "outdoor",
+      "window",
+      "glasses"
+    ],
+    "captions": [
+      {
+        "text": "Satya Nadella sitting on a bench",
+        "confidence": 0.48293603002174407
+      }
+    ]
+  },
+  "requestId": "0dbec5ad-a3d3-4f7e-96b4-dfd57efe967d",
+  "metadata": {
+    "width": 1500,
+    "height": 1000,
+    "format": "Jpeg"
+  },
+  "faces": [
+    {
+      "age": 44,
+      "gender": "Male",
+      "faceRectangle": {
+        "left": 593,
+        "top": 160,
+        "width": 250,
+        "height": 250
+      }
+    }
+  ],
+  "color": {
+    "dominantColorForeground": "Brown",
+    "dominantColorBackground": "Brown",
+    "dominantColors": [
+      "Brown",
+      "Black"
+    ],
+    "accentColor": "873B59",
+    "isBWImg": false
+  },
+  "imageType": {
+    "clipArtType": 0,
+    "lineDrawingType": 0
+  }
+}
+
+
+
+Response 400
+
+
+Possible Errors: 
+•InvalidImageUrl 
+Image URL is badly formatted or not accessible. 
+•InvalidImageFormat 
+Input data is not a valid image.
+•InvalidImageSize 
+Input image is too large.
+•NotSupportedVisualFeature 
+Specified feature type is not valid.
+•NotSupportedImage 
+Unsupported image, e.g. child pornography.
+•InvalidDetails 
+Unsupported domain-specific model.
+
+
+
+application/json 
+
+
+
+
+
+
+{
+        "code":"InvalidImageFormat",
+	"requestId":"B8D802CF-DD8F-4E61-B15C-9E6C5844CCBC",
+	"message":"The input file is not in a valid image format that the service can support. "
+}
+
+
+
+
+Response 415
+
+
+Unsupported media type error. Content-Type is not in the allowed types:
+
+•For an image URL: Content-Type should be application/json
+•For a binary image data: Content-Type should be application/octet-stream or multipart/form-data
+
+
+
+application/json 
+
+
+
+
+
+
+{
+        "code":"BadArgument",
+        "message":"Invalid Media Type"
+}
+
+
+
+Response 500
+
+
+Possible Errors: 
+•FailedToProcess 
+Failed to process the image.
+•Timeout 
+Image processing time out.
+•InternalServerError 
+Internal server error.
+
+
+
+application/json 
+
+
+
+
+
+
+{
+        "code":"FailedToProcess",
+	"requestId":"B8D802CF-DD8F-4E61-B15C-9E6C5844CCBC",
+	"message":"Could not extract image features"
+}
+
+
+
+Code samples
+
+
+Curl 
+
+
+C# 
+
+
+Java 
+
+
+JavaScript 
+
+
+ObjC 
+
+
+PHP 
+
+
+Python 
+
+
+Ruby 
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSSample</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+    $(function() {
+        var params = {
+            // Request parameters
+            "visualFeatures": "Categories",
+            "details": "{string}",
+        };
+      
+        $.ajax({
+            url: "https://api.projectoxford.ai/vision/v1.0/analyze?" + $.param(params),
+            beforeSend: function(xhrObj){
+                // Request headers
+                xhrObj.setRequestHeader("Content-Type","application/json");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","{subscription key}");
+            },
+            type: "POST",
+            // Request body
+            data: "{body}",
+        })
+        .done(function(data) {
+            alert("success");
+        })
+        .fail(function() {
+            alert("error");
+        });
+    });
+</script>
+</body>
+</html>
+
